@@ -168,7 +168,7 @@ function render(){
   if(ui.view==='area'&&ui.tab==='catalogo')renderCat();
   if(ui.view==='resp')showPersist();
 }
-function top(title,left,right){return '<header class="top">'+(left||'')+'<h1>'+esc(title)+'</h1>'+(right||'')+'</header>'}
+function topbar(title,left,right){return '<header class="top">'+(left||'')+'<h1>'+esc(title)+'</h1>'+(right||'')+'</header>'}
 
 function backupDays(){return state.ultimoRespaldo?Math.floor((Date.now()-Date.parse(state.ultimoRespaldo))/864e5):null}
 function hasData(){return state.areas.some(a=>a.catalogo.length||a.capturas.length)}
@@ -182,12 +182,12 @@ function viewHome(){
   }
   const grid=state.areas.length?'<div class="grid">'+state.areas.map(a=>{const r=rojos(a);return '<button class="area" data-act="openArea" data-id="'+a.id+'">'+(r?'<span class="badge">'+r+'</span>':'')+esc(a.nombre)+'<small>'+a.catalogo.length+' productos'+(a.ultimaRevision?' · rev. '+fmt(a.ultimaRevision):'')+'</small></button>'}).join('')+'</div>'
     :'<div class="empty">Aún no tienes áreas.<br>Crea la primera con “+ Nueva Área”.</div>';
-  return top('Mis Áreas')+'<main>'+w+grid+'<button class="btn full" data-act="newArea">+ Nueva Área</button><button class="btn sec full mt" data-act="importArea">Importar área</button></main>';
+  return topbar('Mis Áreas')+'<main>'+w+grid+'<button class="btn full" data-act="newArea">+ Nueva Área</button><button class="btn sec full mt" data-act="importArea">Importar área</button></main>';
 }
 
 function viewArea(){
   const a=curArea();
-  const hd=top(a.nombre,'<button class="ibtn" data-act="back">←</button>','<button class="ibtn" data-act="areaMenu">⋮</button>');
+  const hd=topbar(a.nombre,'<button class="ibtn" data-act="back">←</button>','<button class="ibtn" data-act="areaMenu">⋮</button>');
   const tabs='<div class="tabs">'+[['captura','Captura'],['catalogo','Catálogo'],['cuaderno','Cuaderno']].map(t=>'<button class="'+(ui.tab===t[0]?'on':'')+'" data-act="tab" data-t="'+t[0]+'">'+t[1]+'</button>').join('')+'</div>';
   let b='';
   if(ui.tab==='captura'){
@@ -218,13 +218,13 @@ function viewActivas(){
   const chips='<div class="chips"><div class="chip rojo">'+cnt.rojo+' &lt;7d</div><div class="chip amar" style="color:#222">'+cnt.amar+' 7-15d</div><div class="chip verde">'+cnt.verde+' &gt;15d</div></div>';
   const items=list.length?list.map(x=>'<div class="card item" data-act="editCap" data-a="'+x.a.id+'" data-c="'+x.c.id+'"><div class="dot '+sem(x.c.fecha)+'"></div><div style="flex:1;min-width:0"><b>'+esc(descOf(x.a,x.c))+'</b><div class="mut">'+esc(x.c.codigo)+' · '+esc(x.a.nombre)+'</div><div>'+fmt(x.c.fecha)+' · '+estado(x.c.fecha)+'</div></div><div class="pz">'+x.c.piezas+'</div></div>').join('')
     :'<div class="empty">Sin caducidades vigentes 🎉</div>';
-  return top('Activas')+'<main>'+chips+sel+'<div class="mt">'+items+'</div><div class="mut" style="text-align:center">Los vencidos desaparecen solos 2 días después de su fecha.</div></main>';
+  return topbar('Activas')+'<main>'+chips+sel+'<div class="mt">'+items+'</div><div class="mut" style="text-align:center">Los vencidos desaparecen solos 2 días después de su fecha.</div></main>';
 }
 
 function viewResp(){
   const d=backupDays();
   const st=d===null?'Nunca':(d===0?'Hoy':'Hace '+d+' día'+(d===1?'':'s'));
-  return top('Respaldo')+'<main><div class="card"><b>Último respaldo:</b> '+st+'<div class="mut mt" id="persist"></div></div>'
+  return topbar('Respaldo')+'<main><div class="card"><b>Último respaldo:</b> '+st+'<div class="mut mt" id="persist"></div></div>'
     +'<p class="mut">Tus datos viven solo en este teléfono. Respáldalos seguido (y antes de cambiar de teléfono).</p>'
     +'<button class="btn full" data-act="bkCopy">Copiar respaldo</button>'
     +'<button class="btn full mt" data-act="bkDownload">Descargar archivo</button>'
